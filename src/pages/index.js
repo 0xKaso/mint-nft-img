@@ -2,8 +2,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import IpfsComponent from '@/components/IpfsComponent'
+// const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
@@ -15,7 +15,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        hello
+
+        <div className='max-w-xl'>
+          <div className='text-5xl font-bold'>
+            Create Your Own NFT
+          </div>
+          <p className='text-xl text-neutral-900 dark:dark:text-white'>You can choose the pictures you like to mint a NFT of your own, which is a very cool thing!</p>
+        </div>
+        <div className='
+          border-2
+          bg-slate-100
+          rounded-xl
+          p-8
+          dark:bg-zinc-800
+          shadow-lg
+          shadow-indigo-500/50
+          dark:shadow-zinc-500/50
+          h-96
+          shadow-xl
+        '>
+          <IpfsComponent />
+        </div>
       </main>
       {/* <main className={styles.main}>
         <div className={styles.description}>
@@ -124,3 +144,7 @@ export default function Home() {
     </>
   )
 }
+
+// rounded-lg
+//           border-rose-600
+//           bg-indigo-500
