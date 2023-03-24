@@ -4,8 +4,64 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import IpfsComponent from '@/components/IpfsComponent'
 // const inter = Inter({ subsets: ['latin'] })
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { getAccount } from '@wagmi/core';
+import { useEffect, useState, useContext } from 'react';
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
+
+
+import { ABI } from '../abi.js';
+import { svg } from '../common/constans';
 
 export default function Home() {
+  console.log('ABI', ABI);
+  const { isConnected } = getAccount();
+  // const { address, isConnected } = useAccount()
+  // const { connect } = useConnect({
+  //   connector: new InjectedConnector(),
+  // })
+  // const { disconnect } = useDisconnect()
+  const { config } = usePrepareContractWrite({
+    address: '0x43c4Ebf956F7804596c333B209Ff246a476594DA',
+    abi: ABI,
+    functionName: 'publicMint',
+    // chainId: 420,
+    args: [svg],
+  });
+
+  console.log('config', config);
+
+  console.log('---', usePrepareContractWrite({
+    address: '0x43c4Ebf956F7804596c333B209Ff246a476594DA',
+    // address: '0xe3F556847F37881D4077aAa9FeA877d2362CFc54',
+    abi: ABI,
+    functionName: 'publicMint',
+    args: [svg],
+  }))
+
+
+  const { data, write, error, isError } = useContractWrite(config);
+  console.log('useContractWrite(config)', useContractWrite(config))
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  });
+
+  useEffect(() => {
+    if (isError) {
+      console.error('Mint Failed', data?.message);
+    }
+  }, [isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('Mint Successfully');
+    }
+  }, [isSuccess]);
+
   return (
     <>
       <Head>
@@ -35,6 +91,28 @@ export default function Home() {
           shadow-xl
         '>
           <IpfsComponent />
+
+          <ConnectButton showBalance={false} />
+          {isConnected ? (
+          <div
+          >
+            <button
+              // disabled={!write || isLoading}
+              onClick={() => write()}
+            >
+              {isLoading ? 'Minting...' : 'Mint'}
+            </button>{' '}
+          </div>
+        ) : null}
+
+        {/* {isConnected ? (
+          <div>
+        Connected to
+        <button onClick={() => disconnect()}>Disconnect</button>
+      </div>
+        ) : (
+          <button onClick={() => connect()}>Connect Wallet</button>
+        )} */}
         </div>
       </main>
       {/* <main className={styles.main}>
